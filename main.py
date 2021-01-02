@@ -283,7 +283,6 @@ class AnalyseData(QMainWindow):
         for i in range(0,len(slices)):
             explode_list.append(start_value)
             start_value += 0.025
-            print(start_value)
         slices.sort(reverse=True)
         plt.pie(slices, labels = types, colors=None, startangle=0, shadow = False, explode = explode_list, radius = 1, autopct = '%1.1f%%') 
   
@@ -351,7 +350,6 @@ class AnalyseData(QMainWindow):
         for i in range(0,len(slices)):
             explode_list.append(start_value)
             start_value += 0.025
-            print(start_value)
         slices.sort(reverse=True)
         plt.pie(slices, labels = types, colors=None, startangle=0, shadow = False, explode = explode_list, radius = 1, autopct = '%1.1f%%')  
   
