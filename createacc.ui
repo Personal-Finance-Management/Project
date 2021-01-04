@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>469</width>
-    <height>620</height>
+    <width>643</width>
+    <height>800</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -103,7 +103,7 @@ color: rgb(243, 243, 243);</string>
    <property name="geometry">
     <rect>
      <x>210</x>
-     <y>460</y>
+     <y>640</y>
      <width>111</width>
      <height>41</height>
     </rect>
@@ -156,25 +156,25 @@ color: rgb(243, 243, 243);</string>
   <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>
-     <x>160</x>
+     <x>80</x>
      <y>50</y>
-     <width>211</width>
+     <width>431</width>
      <height>51</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">font: 28pt &quot;MS Shell Dlg 2&quot;;
+    <string notr="true">font: 20pt &quot;MS Shell Dlg 2&quot;;
 color: rgb(255, 255, 127);</string>
    </property>
    <property name="text">
-    <string>Quản lý tiền</string>
+    <string>PERSONAL FINANCE MANAGEMENT </string>
    </property>
   </widget>
   <widget class="QLabel" name="label_6">
    <property name="geometry">
     <rect>
-     <x>130</x>
-     <y>540</y>
+     <x>80</x>
+     <y>720</y>
      <width>131</width>
      <height>31</height>
     </rect>
@@ -189,8 +189,8 @@ color: rgb(255, 255, 127);</string>
   <widget class="QPushButton" name="backtologinbutton">
    <property name="geometry">
     <rect>
-     <x>260</x>
-     <y>540</y>
+     <x>210</x>
+     <y>720</y>
      <width>121</width>
      <height>31</height>
     </rect>
@@ -201,6 +201,114 @@ color: rgb(0, 0, 0);</string>
    </property>
    <property name="text">
     <string>Back to Login</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>450</y>
+     <width>91</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 15pt &quot;MS Shell Dlg 2&quot;;
+color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>Safety Question:</string>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkbox">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>440</y>
+     <width>261</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 14pt &quot;MS Shell Dlg 2&quot;;  color: rgb(255, 255, 255)
+</string>
+   </property>
+   <property name="text">
+    <string>What is your hometown?</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkbox_2">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>480</y>
+     <width>261</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 14pt &quot;MS Shell Dlg 2&quot;;  color: rgb(255, 255, 255)
+</string>
+   </property>
+   <property name="text">
+    <string>What is your first name?</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkbox_3">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>520</y>
+     <width>261</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 14pt &quot;MS Shell Dlg 2&quot;;  color: rgb(255, 255, 255)
+</string>
+   </property>
+   <property name="text">
+    <string>What is your favourite pet?</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_8">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>560</y>
+     <width>91</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 15pt &quot;MS Shell Dlg 2&quot;;
+color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>Answer:</string>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="safetyquestion">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>580</y>
+     <width>261</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 15pt &quot;MS Shell Dlg 2&quot;;
+color: rgb(243, 243, 243);</string>
+   </property>
+   <property name="text">
+    <string/>
    </property>
   </widget>
  </widget>

@@ -32,31 +32,38 @@ class Login(QDialog):
     def loginfunction(self):
         email = self.email.text()
         password = self.password.text()
-
-        connection = sqlite3.connect("csdl.db")
-        sql = "SELECT * FROM users WHERE username=\'" + email + "\' AND password=\'" + password + "\'"
-        cursor = connection.execute(sql)
-        list = []
-        for row in cursor:
-            list.append(row)
-        connection.close()
-
-        if len(list)==1:
-            #msg = QMessageBox()
-            #msg.setWindowTitle("Congratulation!")
-            #my_message = "Successfully logged in with email: " + email 
-            #msg.setText(my_message)
-            #x= msg.exec_()           
-            mainwindow = MainWindow()
-            widget.addWidget(mainwindow)
-            widget.setCurrentIndex(widget.currentIndex()+1)            
-        else:
-            #print("Successfully logged in with email: ", email, " and password: ", password)
+#Do not let username and password leave blank
+        if email == "" or password =="":
             msg = QMessageBox()
-            msg.setWindowTitle("Failed attempt!")
-            my_message = "There is no username as " + email 
+            msg.setWindowTitle("Error")
+            my_message = "Please fill in username and password"
             msg.setText(my_message)
-            x= msg.exec_()
+            x= msg.exec_() 
+        else: 
+            connection = sqlite3.connect("csdl.db")
+            sql = "SELECT * FROM users WHERE username=\'" + email + "\' AND password=\'" + password + "\'"
+            cursor = connection.execute(sql)
+            list = []
+            for row in cursor:
+                list.append(row)
+            connection.close()
+
+            if len(list)==1:
+                #msg = QMessageBox()
+                #msg.setWindowTitle("Congratulation!")
+                #my_message = "Successfully logged in with email: " + email 
+                #msg.setText(my_message)
+                #x= msg.exec_()           
+                mainwindow = MainWindow()
+                widget.addWidget(mainwindow)
+                widget.setCurrentIndex(widget.currentIndex()+1)            
+            else:
+                #print("Successfully logged in with email: ", email, " and password: ", password)
+                msg = QMessageBox()
+                msg.setWindowTitle("Failed attempt!")
+                my_message = "There is no username as " + email 
+                msg.setText(my_message)
+                x= msg.exec_()
 
     def gotocreate(self):
         createacc=CreateAcc()
@@ -74,9 +81,10 @@ class CreateAcc(QDialog):
         
     def createaccfunction(self):
         email = self.email.text()
+        safetyquestion = self.safetyquestion.text()
         if self.password.text()==self.confirmpass.text():
             password = self.password.text()
-#kiem tra username da co san trong csdl hay chua
+#checking username availability in database
             connection = sqlite3.connect("csdl.db")
             query = "SELECT * from users WHERE username =\'" + email+ "\'"
             table = connection.execute(query)
@@ -94,14 +102,17 @@ class CreateAcc(QDialog):
                 x= msg.exec_()
 
             else:
+                if self.checkbox.clicked and self.checkbox_2.clicked or self.checkbox.clicked and  self.checkbox_3.clicked or self.checkbox_2.clicked and self.checkbox_3.clicked:
+                    print ("Please choose only one safety question")
+                
 
                 connection = sqlite3.connect("csdl.db")
-                sql = "INSERT INTO users(username, password) VALUES (\'" + email + "\', \'" + password + "\')"
+                sql = "INSERT INTO users(username, password,safetyquestion) VALUES (\'" + email + "\', \'" + password + "\',\'" + safetyquestion + "\' )"
                 connection.execute(sql)
                 connection.commit()
                 connection.close()
 
-            #print("Successfully created account with email: ", email, "and password: ", password)
+#print("Successfully created account with email: ", email, "and password: ", password)
                 msg = QMessageBox()
                 msg.setWindowTitle("Congratulation!")
                 my_message = "Successfully created account with email: " + email 
@@ -111,7 +122,7 @@ class CreateAcc(QDialog):
                 widget.addWidget(login)
                 widget.setCurrentIndex(widget.currentIndex()+1)
         else:
-            #print("Password should be identical!")
+#print("Password should be identical!")
             msg = QMessageBox()
             msg.setWindowTitle("Failed attempt!")
             my_message = "\"Confirmed Password\" should be identical to \"Password\"!"
@@ -467,6 +478,6 @@ logindialog = Login()
 widget = QtWidgets.QStackedWidget()
 widget.addWidget(logindialog)
 widget.setFixedWidth(510)
-widget.setFixedHeight(620)
+widget.setFixedHeight(800)
 widget.show()
 app.exec_()
