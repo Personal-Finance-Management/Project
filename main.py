@@ -81,56 +81,63 @@ class CreateAcc(QDialog):
         
     def createaccfunction(self):
         email = self.email.text()
+        password = self.password.text()
+        confirmpass = self.confirmpass.text()
         safetyquestion = self.safetyquestion.text()
-        if self.password.text()==self.confirmpass.text():
-            password = self.password.text()
-#checking username availability in database
-            connection = sqlite3.connect("csdl.db")
-            query = "SELECT * from users WHERE username =\'" + email+ "\'"
-            table = connection.execute(query)
-            list = []
-            for row in table:
-                list.append(row)
-            connection.close()
-
-            if len(list)==1: 
-                print ("The username has already registered. Please try the other name")
-                msg = QMessageBox()
-                msg.setWindowTitle("Fail to creat an account!")
-                my_message = "The chosen username ID has already existed. Please try another name" 
-                msg.setText(my_message)
-                x= msg.exec_()
-
-            else:
-                if self.checkbox.clicked and self.checkbox_2.clicked or self.checkbox.clicked and  self.checkbox_3.clicked or self.checkbox_2.clicked and self.checkbox_3.clicked:
-                    print ("Please choose only one safety question")
-                
-
+        if email == "" or password =="" or confirmpass =="":
+            msg = QMessageBox()
+            msg.setWindowTitle("Error")
+            my_message = "Please fill in username, password, and confirmed password"
+            msg.setText(my_message)
+            x= msg.exec_() 
+        else: 
+            if self.password.text()==self.confirmpass.text():
+                #checking username availability in database
                 connection = sqlite3.connect("csdl.db")
-                sql = "INSERT INTO users(username, password,safetyquestion) VALUES (\'" + email + "\', \'" + password + "\',\'" + safetyquestion + "\' )"
-                connection.execute(sql)
-                connection.commit()
+                query = "SELECT * from users WHERE username =\'" + email+ "\'"
+                table = connection.execute(query)
+                list = []
+                for row in table:
+                    list.append(row)
                 connection.close()
 
-#print("Successfully created account with email: ", email, "and password: ", password)
+                if len(list)==1: 
+                    print ("The username has already registered. Please try the other name")
+                    msg = QMessageBox()
+                    msg.setWindowTitle("Fail to creat an account!")
+                    my_message = "The chosen username ID has already existed. Please try another name" 
+                    msg.setText(my_message)
+                    x= msg.exec_()
+
+                else:
+                    if self.checkbox.clicked and self.checkbox_2.clicked or self.checkbox.clicked and  self.checkbox_3.clicked or self.checkbox_2.clicked and self.checkbox_3.clicked:
+                        print ("Please choose only one safety question")
+
+                    connection = sqlite3.connect("csdl.db")
+                    sql = "INSERT INTO users(username, password,safetyquestion) VALUES (\'" + email + "\', \'" + password + "\',\'" + safetyquestion + "\' )"
+                    connection.execute(sql)
+                    connection.commit()
+                    connection.close()
+
+                    #print("Successfully created account with email: ", email, "and password: ", password)
+                    msg = QMessageBox()
+                    msg.setWindowTitle("Congratulation!")
+                    my_message = "Successfully created account with email: " + email 
+                    msg.setText(my_message)
+                    x= msg.exec_()
+                    login=Login()
+                    widget.addWidget(login)
+                    widget.setCurrentIndex(widget.currentIndex()+1)
+            else:
+                #print("Password should be identical!")
                 msg = QMessageBox()
-                msg.setWindowTitle("Congratulation!")
-                my_message = "Successfully created account with email: " + email 
+                msg.setWindowTitle("Failed attempt!")
+                my_message = "\"Confirmed Password\" should be identical to \"Password\"!"
                 msg.setText(my_message)
                 x= msg.exec_()
-                login=Login()
-                widget.addWidget(login)
-                widget.setCurrentIndex(widget.currentIndex()+1)
-        else:
-#print("Password should be identical!")
-            msg = QMessageBox()
-            msg.setWindowTitle("Failed attempt!")
-            my_message = "\"Confirmed Password\" should be identical to \"Password\"!"
-            msg.setText(my_message)
-            x= msg.exec_()
-            #self.email.clear()
-            self.password.clear()
-            self.confirmpass.clear()
+                #self.email.clear()
+                self.password.clear()
+                self.confirmpass.clear()
 
     def backtologin(self):
         loginback=Login()
