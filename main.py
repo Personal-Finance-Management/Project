@@ -272,7 +272,7 @@ class AnalyseData(QMainWindow):
     def income_bymonth(self):
         # x-coordinates of left sides of bars  
         left = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] 
-  
+
         # heights of bars 
         connection = sqlite3.connect("csdl.db")
         sql = "SELECT SUM(income) FROM incomes GROUP BY month"
@@ -282,21 +282,39 @@ class AnalyseData(QMainWindow):
             income_values.append(row[0])
         connection.close()
 
+        # figure = plt.figure()
+        # axes = figure.add_axes([0,0,1,1])
+
         # labels for bars 
         tick_label = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] 
-  
+
         # plotting a bar chart 
-        plt.bar(left, income_values, tick_label = tick_label, width = 0.8, color = ['red', 'green']) 
-  
+        # axes.bar(left, income_values, tick_label = tick_label, width = 0.8, color = ['red', 'green']) 
+
+        # axes.bar(left, income_values)
+
         # naming the x-axis 
-        plt.xlabel('Months') 
+        # axes.xlabel('Months') 
         # naming the y-axis 
-        plt.ylabel('Income') 
+        # axes.ylabel('Income') 
         # plot title 
-        plt.title('Income over months!') 
-  
+        # axes.title('Income over months!') 
+
         # function to show the plot 
-        plt.show()
+        # plt.close(figure)
+        # figure.canvas.draw()
+        # plt.draw()
+
+        plt.ion()
+        fig = plt.figure(figsize=(10,8))
+        ax = fig.add_axes([0.1,0.1,0.8,0.8])
+        ax.bar(left, income_values, tick_label = tick_label, width = 0.8, color = ['red', 'green']) 
+        ax.set_title('Income over months!')
+        ax.set_xlabel('Months')
+        ax.set_ylabel('Income')
+        # raw_input('Enter to close and Continue: ')
+        # plt.close(fig)
+        # fig.canvas.draw()
 
     def income_bytype(self):
         connection = sqlite3.connect("csdl.db")
