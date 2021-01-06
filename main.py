@@ -61,7 +61,7 @@ class Login(QDialog):
                 #print("Successfully logged in with email: ", email, " and password: ", password)
                 msg = QMessageBox()
                 msg.setWindowTitle("Failed attempt!")
-                my_message = "There is no username as " + email 
+                my_message = "There is no username as: " + email 
                 msg.setText(my_message)
                 x= msg.exec_()
 
