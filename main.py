@@ -288,6 +288,7 @@ class AnalyseData(QMainWindow):
         plt.title('Income over months!') 
   
         # function to show the plot 
+        plt.ion()
         plt.show()
 
     def income_bytype(self):
@@ -323,7 +324,8 @@ class AnalyseData(QMainWindow):
         # plotting legend 
         plt.legend() 
   
-        # showing the plot 
+        # showing the plot
+        plt.ion() 
         plt.show() 
 
     def cost_bymonth(self):
@@ -353,6 +355,7 @@ class AnalyseData(QMainWindow):
         plt.title('Cost over months!') 
   
         # function to show the plot 
+        plt.ion()
         plt.show()
 
 
@@ -391,6 +394,7 @@ class AnalyseData(QMainWindow):
         plt.legend() 
   
         # showing the plot 
+        plt.ion()
         plt.show() 
 
 
@@ -418,6 +422,7 @@ class AnalyseData(QMainWindow):
         plt.ylabel("Income/Cost values")
         
         # showing the plot 
+        plt.ion()
         plt.show()
 
     def back_window(self):
