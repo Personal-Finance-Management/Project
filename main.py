@@ -88,7 +88,7 @@ class CreateAcc(QDialog):
         if email == "" or password =="" or confirmpass =="" or safetyquestion == "":
             msg = QMessageBox()
             msg.setWindowTitle("Error")
-            my_message = "Please fill in username, password, and confirmed password"
+            my_message = "Please fill in username, password, confirmed password, and safety question"
             msg.setText(my_message)
             x= msg.exec_() 
         else: 
@@ -111,29 +111,21 @@ class CreateAcc(QDialog):
                     x= msg.exec_()
 
                 else: 
-                    if self.checkbox.clicked and self.checkbox_2.clicked or self.checkbox.clicked and self.checkbox_3.clicked or self.checkbox_2.clicked and self.checkbox_3.clicked:
-                        print ("Please choose only one safety question")
-                        msg = QMessageBox()
-                        msg.setWindowTitle("Fail to creat an account!")
-                        error_message = "Please only choose one safety question!!!" 
-                        msg.setText(error_message)
-                        x= msg.exec_()
-                    else:
-                        connection = sqlite3.connect("csdl.db")
-                        sql = "INSERT INTO users(username, password,safetyquestion) VALUES (\'" + email + "\', \'" + password + "\',\'" + safetyquestion + "\' )"
-                        connection.execute(sql)
-                        connection.commit()
-                        connection.close()
+                    connection = sqlite3.connect("csdl.db")
+                    sql = "INSERT INTO users(username, password,safetyquestion) VALUES (\'" + email + "\', \'" + password + "\',\'" + safetyquestion + "\' )"
+                    connection.execute(sql)
+                    connection.commit()
+                    connection.close()
 
                     #print("Successfully created account with email: ", email, "and password: ", password)
-                        msg = QMessageBox()
-                        msg.setWindowTitle("Congratulation!")
-                        my_message = "Successfully created account with email: " + email 
-                        msg.setText(my_message)
-                        x= msg.exec_()
-                        login=Login()
-                        widget.addWidget(login)
-                        widget.setCurrentIndex(widget.currentIndex()+1)
+                    msg = QMessageBox()
+                    msg.setWindowTitle("Congratulation!")
+                    my_message = "Successfully created account with email: " + email 
+                    msg.setText(my_message)
+                    x= msg.exec_()
+                    login=Login()
+                    widget.addWidget(login)
+                    widget.setCurrentIndex(widget.currentIndex()+1)
             else:
                 #print("Password should be identical!")
                 msg = QMessageBox()

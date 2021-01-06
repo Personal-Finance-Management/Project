@@ -103,7 +103,7 @@ color: rgb(243, 243, 243);</string>
    <property name="geometry">
     <rect>
      <x>210</x>
-     <y>640</y>
+     <y>600</y>
      <width>111</width>
      <height>41</height>
     </rect>
@@ -174,7 +174,7 @@ color: rgb(255, 255, 127);</string>
    <property name="geometry">
     <rect>
      <x>80</x>
-     <y>720</y>
+     <y>680</y>
      <width>131</width>
      <height>31</height>
     </rect>
@@ -190,7 +190,7 @@ color: rgb(255, 255, 127);</string>
    <property name="geometry">
     <rect>
      <x>210</x>
-     <y>720</y>
+     <y>680</y>
      <width>121</width>
      <height>31</height>
     </rect>
@@ -223,62 +223,11 @@ color: rgb(255, 255, 255);</string>
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkbox">
-   <property name="geometry">
-    <rect>
-     <x>160</x>
-     <y>440</y>
-     <width>261</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">font: 14pt &quot;MS Shell Dlg 2&quot;;  color: rgb(255, 255, 255)
-</string>
-   </property>
-   <property name="text">
-    <string>What is your hometown?</string>
-   </property>
-  </widget>
-  <widget class="QCheckBox" name="checkbox_2">
-   <property name="geometry">
-    <rect>
-     <x>160</x>
-     <y>480</y>
-     <width>261</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">font: 14pt &quot;MS Shell Dlg 2&quot;;  color: rgb(255, 255, 255)
-</string>
-   </property>
-   <property name="text">
-    <string>What is your first name?</string>
-   </property>
-  </widget>
-  <widget class="QCheckBox" name="checkbox_3">
-   <property name="geometry">
-    <rect>
-     <x>160</x>
-     <y>520</y>
-     <width>261</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">font: 14pt &quot;MS Shell Dlg 2&quot;;  color: rgb(255, 255, 255)
-</string>
-   </property>
-   <property name="text">
-    <string>What is your favourite pet?</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="label_8">
    <property name="geometry">
     <rect>
      <x>50</x>
-     <y>560</y>
+     <y>520</y>
      <width>91</width>
      <height>61</height>
     </rect>
@@ -298,7 +247,7 @@ color: rgb(255, 255, 255);</string>
    <property name="geometry">
     <rect>
      <x>160</x>
-     <y>580</y>
+     <y>540</y>
      <width>261</width>
      <height>31</height>
     </rect>
@@ -309,6 +258,19 @@ color: rgb(243, 243, 243);</string>
    </property>
    <property name="text">
     <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_9">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>450</y>
+     <width>211</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; color:#ffffff;&quot;&gt;What is your last name?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
  </widget>
