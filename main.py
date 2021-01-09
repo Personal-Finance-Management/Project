@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import pandas as pd 
 import datetime
 from datetime import datetime
+import numpy as np
 
 def createConnection():
     con = QSqlDatabase.addDatabase("QSQLITE")
@@ -231,7 +232,7 @@ class AddData(QMainWindow):
             msg.setWindowTitle("Failed attempt!")
             my_message = "Input value for " 
             if self.date.text()=="":
-                my_message += " \"Month\" "
+                my_message += " \"Date\" "
             if self.income.text()=="":
                 my_message += " \"Income\" "
             if self.incometype.text()=="":
@@ -292,7 +293,7 @@ class AddData(QMainWindow):
             msg.setWindowTitle("Failed attempt!")
             my_message = "Input value for " 
             if self.date.text()=="":
-                my_message += " \"Month\" "
+                my_message += " \"Date\" "
             if self.cost.text()=="":
                 my_message += " \"Cost\" "
             if self.costtype.text()=="":
@@ -327,23 +328,26 @@ class AnalyseData(QMainWindow):
         self.backbutton.clicked.connect(self.back_window)
 
     def income_bymonth(self):
-        # x-coordinates of left sides of bars  
-        left = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] 
-  
-        # heights of bars 
         connection = sqlite3.connect("csdl.db")
-        sql = "SELECT SUM(income) FROM incomes GROUP BY strftime('%m',date)"
+        sql = "SELECT strftime('%m',date)||'-'||substr(strftime('%Y',date),3,2), SUM(income) FROM incomes GROUP BY strftime('%m-%Y',date) ORDER BY strftime('%Y',date), strftime('%m',date) "
         cursor = connection.execute(sql)
+        # x-coordinates of left sides of bars
+        left = []
+        # heights of bars
         income_values = []
+        # labels of bars
+        income_labels =[]
+        index = 0
         for row in cursor:
-            income_values.append(row[0])
+            index += 1
+            left.append(index)
+            income_labels.append(row[0])
+            income_values.append(row[1])
         connection.close()
-
-        # labels for bars 
-        tick_label = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] 
   
         # plotting a bar chart 
-        plt.bar(left, income_values, tick_label = tick_label, width = 0.8, color = ['red', 'green']) 
+        plt.xticks(rotation=(min(90,index/12*45)))
+        plt.bar(left, income_values, tick_label = income_labels, width = 0.8, color = ['red', 'green']) 
   
         # naming the x-axis 
         plt.xlabel('Months') 
@@ -394,23 +398,27 @@ class AnalyseData(QMainWindow):
         plt.show() 
 
     def cost_bymonth(self):
-        # x-coordinates of left sides of bars  
-        left = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] 
-  
-        # heights of bars 
         connection = sqlite3.connect("csdl.db")
-        sql = "SELECT SUM(cost) FROM costs GROUP BY strftime('%m',date)"
+        sql = "SELECT strftime('%m',date)||'-'||substr(strftime('%Y',date),3,2), SUM(cost) FROM costs GROUP BY strftime('%m-%Y',date) ORDER BY strftime('%Y',date), strftime('%m',date) "
         cursor = connection.execute(sql)
+        # x-coordinates of left sides of bars
+        left = []
+        # heights of bars
         cost_values = []
+        # labels of bars
+        cost_labels =[]
+        index = 0
         for row in cursor:
-            cost_values.append(row[0])
+            index += 1
+            left.append(index)
+            cost_labels.append(row[0])
+            cost_values.append(row[1])
         connection.close()
-
-        # labels for bars 
-        tick_label = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] 
+        print (left)
   
         # plotting a bar chart 
-        plt.bar(left, cost_values, tick_label = tick_label, width = 0.8, color = ['red', 'green']) 
+        plt.xticks(rotation=(min(90,index/12*45)))
+        plt.bar(left, cost_values, tick_label = cost_labels, width = 0.8, color = ['red', 'green']) 
   
         # naming the x-axis 
         plt.xlabel('Months') 
@@ -467,24 +475,48 @@ class AnalyseData(QMainWindow):
         connection = sqlite3.connect("csdl.db")
         
         # preparing aggregated income values
-        sql = "SELECT SUM(income) FROM incomes GROUP BY strftime('%m',date)"
+        sql = "SELECT cast(strftime('%Y',date) as interger)*12+cast(strftime('%m',date) as interger), strftime('%m',date)||'-'||substr(strftime('%Y',date),3,2), SUM(income) FROM incomes GROUP BY strftime('%m-%Y',date) ORDER BY strftime('%Y',date), strftime('%m',date)"
         cursor = connection.execute(sql)
+        income_index = []
         income_values = []
+        income_labels = []
         for row in cursor:
-            income_values.append(row[0])
-        
+            income_index.append(row[0])
+            income_labels.append(row[1])
+            income_values.append(row[2])
         # preparing aggregated cost values
-        sql = "SELECT SUM(cost) FROM costs GROUP BY strftime('%m',date)"
+        sql = "SELECT cast(strftime('%Y',date) as interger)*12+cast(strftime('%m',date) as interger), strftime('%m',date)||'-'||substr(strftime('%Y',date),3,2), SUM(cost) FROM costs GROUP BY strftime('%m-%Y',date) ORDER BY strftime('%Y',date), strftime('%m',date)"
         cursor = connection.execute(sql)
+        cost_index = []
         cost_values = []
+        cost_labels = []
         for row in cursor:
-            cost_values.append(row[0])
+            cost_index.append(row[0])
+            cost_labels.append(row[1])
+            cost_values.append(row[2])
         connection.close()
-        plotdata = pd.DataFrame({'Income': income_values, 'Cost': cost_values}, index = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'])    
+        comparion_index = list(set(income_index + cost_index))
+        comparion_index.sort()
+        comparion_income = [0]*len(comparion_index)
+        comparion_cost = [0]*len(comparion_index)
+        comparion_label = ['']*len(comparion_index)
+        plt_index = []
+        for i in range(len(comparion_index)):
+            plt_index = plt_index + [i]
+            for j in range(len(income_values)):
+                if  comparion_index[i]== income_index[j]:
+                    comparion_income[i] = income_values[j]
+                    comparion_label[i] = income_labels[j]
+            for k in range(len(cost_values)):
+                if  comparion_index[i]== cost_index[k]:
+                    comparion_cost[i] = cost_values[k]
+                    comparion_label[i] = cost_labels[k]
+        plotdata = pd.DataFrame({'Income': comparion_income, 'Cost': comparion_cost})    
         plotdata.plot(kind="bar")
         plt.title("Income versus Cost")
         plt.xlabel("Months")
         plt.ylabel("Income/Cost values")
+        plt.xticks(ticks = plt_index, labels=comparion_label, rotation=(min(90,len(comparion_index)/12*45)))
         
         # showing the plot 
         plt.ion()
