@@ -200,7 +200,16 @@ class AddData(QMainWindow):
         if self.date.text()!="" and self.income.text()!="" and self.incometype.text()!="":
             try :
                 getdate = datetime.strptime(date, "%d/%m/%Y")
-                sql_type_date = currentYear + '-' + currentMonth + '-' + currentDay 
+                
+                inputDay = str(getdate.day)
+                if len(inputDay)==1:
+                    inputDay = '0'+inputDay
+                inputMonth = str(getdate.month)
+                if len(inputMonth)==1:
+                    inputMonth = '0'+inputMonth
+                inputYear = str(getdate.year)
+                
+                sql_type_date = inputYear + '-' + inputMonth + '-' + inputDay 
                 connection = sqlite3.connect("csdl.db")
                 sql = "INSERT INTO incomes(date, income, incometype) VALUES (\'" + sql_type_date + "\', \'" + income + "\', \'" + incometype + "\')"
                 connection.execute(sql)
@@ -251,12 +260,23 @@ class AddData(QMainWindow):
         if self.date.text()!="" and self.cost.text()!="" and self.costtype.text()!="":
             try :
                 getdate = datetime.strptime(date, "%d/%m/%Y")
-                sql_type_date = currentYear + '-' + currentMonth + '-' + currentDay 
+                
+                inputDay = str(getdate.day)
+                if len(inputDay)==1:
+                    inputDay = '0'+inputDay
+                inputMonth = str(getdate.month)
+                if len(inputMonth)==1:
+                    inputMonth = '0'+inputMonth
+                inputYear = str(getdate.year)
+                
+                sql_type_date = inputYear + '-' + inputMonth + '-' + inputDay 
                 connection = sqlite3.connect("csdl.db")
                 sql = "INSERT INTO costs(date, cost, costtype) VALUES (\'" + sql_type_date + "\', \'" + cost + "\', \'" + costtype + "\')"
                 connection.execute(sql)
                 connection.commit()
                 connection.close()
+                self.showcost=ShowCost()
+                self.showcost.show()
             except ValueError:
                 msg = QMessageBox()
                 msg.setWindowTitle("Failed attempt!")
