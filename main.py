@@ -106,7 +106,7 @@ class CreateAcc(QDialog):
                 connection.close()
 
                 if len(list)==1: 
-                    print ("The username has already registered. Please try the other name")
+                    #print ("The username has already registered. Please try the other name")
                     msg = QMessageBox()
                     msg.setWindowTitle("Fail to creat an account!")
                     my_message = "The chosen username ID has already existed. Please try another name" 
@@ -414,7 +414,6 @@ class AnalyseData(QMainWindow):
             cost_labels.append(row[0])
             cost_values.append(row[1])
         connection.close()
-        print (left)
   
         # plotting a bar chart 
         plt.xticks(rotation=(min(90,index/12*45)))
