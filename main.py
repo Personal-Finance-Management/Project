@@ -8,8 +8,6 @@ from PyQt5.QtSql import QSqlDatabase, QSqlQueryModel, QSqlQuery
 import sqlite3 
 import matplotlib.pyplot as plt
 import pandas as pd 
-import datetime
-from datetime import datetime
 
 def createConnection():
     con = QSqlDatabase.addDatabase("QSQLITE")
@@ -186,35 +184,15 @@ class AddData(QMainWindow):
         self.setWindowTitle("Add income interface")
         self.count = self.count + 1 # this is incrementing counter
         
-        currentDay = str(datetime.now().day)
-        if len(currentDay)==1:
-            currentDay = '0'+currentDay
-        currentMonth = str(datetime.now().month)
-        if len(currentMonth)==1:
-            currentMonth = '0'+currentMonth
-        currentYear = str(datetime.now().year)
-
-        date = self.date.text()
+        month = self.month.text()
         income = self.income.text()
         incometype = self.incometype.text()
-        if self.date.text()!="" and self.income.text()!="" and self.incometype.text()!="":
-            try :
-                getdate = datetime.strptime(date, "%d/%m/%Y")
-                sql_type_date = currentYear + '-' + currentMonth + '-' + currentDay 
-                connection = sqlite3.connect("csdl.db")
-                sql = "INSERT INTO incomes(date, income, incometype) VALUES (\'" + sql_type_date + "\', \'" + income + "\', \'" + incometype + "\')"
-                connection.execute(sql)
-                connection.commit()
-                connection.close()
-            except ValueError:
-                msg = QMessageBox()
-                msg.setWindowTitle("Failed attempt!")
-                my_message = "Error: Date inputted must be in format dd/mm/yyyy. Current date will be suggested as an example " 
-                msg.setText(my_message)
-                x= msg.exec_()    
-                
-                currentDMY = currentDay + '/'+ currentMonth + '/' + currentYear
-                self.date.setText(currentDMY)
+        if self.month.text()!="" and self.income.text()!="" and self.incometype.text()!="":
+            connection = sqlite3.connect("csdl.db")
+            sql = "INSERT INTO incomes(month, income, incometype) VALUES (\'" + month + "\', \'" + income + "\', \'" + incometype + "\')"
+            connection.execute(sql)
+            connection.commit()
+            connection.close()
         else:
             msg = QMessageBox()
             msg.setWindowTitle("Failed attempt!")
@@ -234,42 +212,21 @@ class AddData(QMainWindow):
     def add_cost(self):
         self.setWindowTitle("Add cost interface")
         self.count = self.count + 1 # this is incrementing counter
-
-        currentDay = str(datetime.now().day)
-        if len(currentDay)==1:
-            currentDay = '0'+currentDay
-        currentMonth = str(datetime.now().month)
-        if len(currentMonth)==1:
-            currentMonth = '0'+currentMonth
-        currentYear = str(datetime.now().year)
-
-        date = self.date.text()
+        
+        month = self.month.text()
         cost = self.cost.text()
         costtype = self.costtype.text()
-        if self.date.text()!="" and self.cost.text()!="" and self.costtype.text()!="":
-            try :
-                getdate = datetime.strptime(date, "%d/%m/%Y")
-                sql_type_date = currentYear + '-' + currentMonth + '-' + currentDay 
-                connection = sqlite3.connect("csdl.db")
-                sql = "INSERT INTO costs(date, cost, costtype) VALUES (\'" + sql_type_date + "\', \'" + cost + "\', \'" + costtype + "\')"
-                connection.execute(sql)
-                connection.commit()
-                connection.close()
-            except ValueError:
-                msg = QMessageBox()
-                msg.setWindowTitle("Failed attempt!")
-                my_message = "Error: Date inputted must be in format dd/mm/yyyy. Current date will be suggested as an example " 
-                msg.setText(my_message)
-                x= msg.exec_()    
-                
-                currentDMY = currentDay + '/'+ currentMonth + '/' + currentYear
-                self.date.setText(currentDMY)
-                #self.update()
+        if self.month.text()!="" and self.cost.text()!="" and self.costtype.text()!="":
+            connection = sqlite3.connect("csdl.db")
+            sql = "INSERT INTO costs(month, cost, costtype) VALUES (\'" + month + "\', \'" + cost + "\', \'" + costtype + "\')"
+            connection.execute(sql)
+            connection.commit()
+            connection.close()
         else:
             msg = QMessageBox()
             msg.setWindowTitle("Failed attempt!")
             my_message = "Input value for " 
-            if self.date.text()=="":
+            if self.month.text()=="":
                 my_message += " \"Month\" "
             if self.cost.text()=="":
                 my_message += " \"Cost\" "
@@ -310,7 +267,7 @@ class AnalyseData(QMainWindow):
   
         # heights of bars 
         connection = sqlite3.connect("csdl.db")
-        sql = "SELECT SUM(income) FROM incomes GROUP BY strftime('%m',date)"
+        sql = "SELECT SUM(income) FROM incomes GROUP BY month"
         cursor = connection.execute(sql)
         income_values = []
         for row in cursor:
@@ -377,11 +334,10 @@ class AnalyseData(QMainWindow):
   
         # heights of bars 
         connection = sqlite3.connect("csdl.db")
-        sql = "SELECT SUM(cost) FROM costs GROUP BY strftime('%m',date)"
+        sql = "SELECT SUM(cost) FROM costs GROUP BY month"
         cursor = connection.execute(sql)
         cost_values = []
         for row in cursor:
-            print(row[0])
             cost_values.append(row[0])
         connection.close()
 
@@ -446,14 +402,14 @@ class AnalyseData(QMainWindow):
         connection = sqlite3.connect("csdl.db")
         
         # preparing aggregated income values
-        sql = "SELECT SUM(income) FROM incomes GROUP BY strftime('%m',date)"
+        sql = "SELECT SUM(income) FROM incomes GROUP BY month"
         cursor = connection.execute(sql)
         income_values = []
         for row in cursor:
             income_values.append(row[0])
         
         # preparing aggregated cost values
-        sql = "SELECT SUM(cost) FROM costs GROUP BY strftime('%m',date)"
+        sql = "SELECT SUM(cost) FROM costs GROUP BY month"
         cursor = connection.execute(sql)
         cost_values = []
         for row in cursor:
@@ -486,7 +442,7 @@ class ShowIncome(QMainWindow):
         self.view = QTableWidget()
         self.view.setColumnCount(3)
         self.view.setHorizontalHeaderLabels(["Month", "Income", "Income Type"])
-        query = QSqlQuery("SELECT date, income, incometype FROM incomes")
+        query = QSqlQuery("SELECT month, income, incometype FROM incomes")
         while query.next():
             rows = self.view.rowCount()
             self.view.setRowCount(rows + 1)
@@ -508,7 +464,7 @@ class ShowCost(QMainWindow):
         self.view = QTableWidget()
         self.view.setColumnCount(3)
         self.view.setHorizontalHeaderLabels(["Month", "Cost", "Cost Type"])
-        query = QSqlQuery("SELECT date, cost, costtype FROM costs")
+        query = QSqlQuery("SELECT month, cost, costtype FROM costs")
         while query.next():
             rows = self.view.rowCount()
             self.view.setRowCount(rows + 1)
