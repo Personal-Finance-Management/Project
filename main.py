@@ -28,7 +28,7 @@ class Login(QDialog):
         self.loginbutton.clicked.connect(self.loginfunction)
         self.password.setEchoMode(QtWidgets.QLineEdit.Password)
         self.createaccbutton.clicked.connect(self.gotocreate)
-
+        self.forgotpassword.clicked.connect(self.resetpass)
     def loginfunction(self):
         email = self.email.text()
         password = self.password.text()
@@ -69,6 +69,49 @@ class Login(QDialog):
         createacc=CreateAcc()
         widget.addWidget(createacc)
         widget.setCurrentIndex(widget.currentIndex()+1)
+    def resetpass(self):
+        resetpass = Resetpass()
+        widget.addWidget(resetpass)
+        widget.setCurrentIndex(widget.currentIndex()+1)
+
+class Resetpass(QDialog):
+    def __init__(self):
+        super(Resetpass,self).__init__()
+        loadUi("resetpass.ui",self)
+        self.newpass.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.confirmnewpass.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.resetbutton.clicked.connect(self.resetpass)
+
+    def resetpass(self):
+        username = self.username.text()
+        newpass = self.newpass.text()
+        confirmnewpass = self.confirmnewpass.text()
+        answer = self.answersafetyquestion.text()
+#Do not let data leave blank
+        if username == "" or newpass =="" or confirmnewpass == "" or answer == "":
+            msg = QMessageBox()
+            msg.setWindowTitle("Error")
+            my_message = "Please fill in required information"
+            msg.setText(my_message)
+            x= msg.exec_()
+            if newpass == confirmnewpass:
+                connection = sqlite3.connect("csdl.db")
+                sql = "SELECT * FROM users WHERE username=\'" + username + "\' AND safetyquestion=\'" + answer + "\'"
+                table = connection.execute(sql)
+                list = []
+                for row in table:
+                    list.append(row)
+                connection.close()
+            else:
+                msg = QMessageBox()
+                msg.setWindowTitle("Error")
+                error_message = "New password and confirmed new password need to be identical"
+                msg.setText(erorr_message)
+                x= msg.exec_()
+        
+            
+            
+                
 
 class CreateAcc(QDialog):
     def __init__(self):
