@@ -11,6 +11,11 @@ import pandas as pd
 import datetime
 from datetime import datetime
 import numpy as np
+import xlrd
+import tkinter
+from tkinter import *
+from tkinter.filedialog import askopenfilename
+import os
 
 def createConnection():
     con = QSqlDatabase.addDatabase("QSQLITE")
@@ -155,7 +160,57 @@ class MainWindow(QMainWindow):
         self.quitbutton.clicked.connect(self.quit_program)
     
     def import_data(self):
-        pass
+        root = tkinter.Tk()
+        root.withdraw() #use to hide tkinter window
+
+        currdir = os.getcwd()
+        while True:
+            chosenfile = askopenfilename(parent=root, initialdir=currdir, title='Please select a directory')
+            if chosenfile.endswith('.xls'):
+                break
+            else: 
+                msg = QMessageBox()
+                msg.setWindowTitle("Error!")
+                my_message = "Please choose a .xls file!" 
+                msg.setText(my_message)
+                x= msg.exec_()
+
+        if len(chosenfile) > 0:      
+            book = xlrd.open_workbook(chosenfile)
+        connection = sqlite3.connect("csdl.db")
+
+        cursor = connection.cursor()
+        sheet = book.sheet_by_name("Incomes")
+        for r in range(1, sheet.nrows):
+            date = sheet.cell(r,0).value
+            income = sheet.cell(r,1).value
+            incometype = sheet.cell(r,2).value
+            sql = "INSERT INTO incomes (date, income, incometype) VALUES (\'" + str(date) + "\',\'" + str(income) + "\',\'" + str(incometype) + "\')"
+            cursor = connection.execute(sql)
+        Income_columns = str(sheet.ncols)
+        Income_rows = str(sheet.nrows-1)
+        cursor.close()
+
+        cursor = connection.cursor()
+        sheet = book.sheet_by_name("Costs")
+        for r in range(1, sheet.nrows):
+            date = sheet.cell(r,0).value
+            cost = sheet.cell(r,1).value
+            costtype = sheet.cell(r,2).value
+            sql = "INSERT INTO costs (date, cost, costtype) VALUES (\'" + str(date) + "\',\'" + str(cost) + "\',\'" + str(costtype) + "\')"
+            cursor = connection.execute(sql)
+        Cost_columns = str(sheet.ncols)
+        Cost_rows = str(sheet.nrows-1)
+        cursor.close()
+
+        connection.commit()
+        connection.close()
+    
+        msg = QMessageBox()
+        msg.setWindowTitle("Congratulation!")
+        my_message = "Successfully imported: \nIncomes: " + Income_columns + " columns, " + Income_rows + " rows! \nCosts: " + Cost_columns + " columns, " + Cost_rows + " rows!" 
+        msg.setText(my_message)
+        x= msg.exec_()
 
     def update_data(self):
         #self.adddata=AddData()
