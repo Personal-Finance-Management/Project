@@ -131,6 +131,24 @@ color: rgb(243, 243, 243);</string>
 color: rgb(243, 243, 243);</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="showincomebutton">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>500</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(85, 255, 255);
+color: rgb(0, 0, 0);
+font: 14pt &quot;MS Shell Dlg 2&quot;;</string>
+    </property>
+    <property name="text">
+     <string>Show all income</string>
+    </property>
+   </widget>
    <widget class="QPushButton" name="addcostbutton">
     <property name="geometry">
      <rect>
@@ -178,6 +196,24 @@ color: rgb(255, 255, 255);</string>
     <property name="styleSheet">
      <string notr="true">font: 15pt &quot;MS Shell Dlg 2&quot;;
 color: rgb(243, 243, 243);</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="showcostbutton">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>500</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(85, 255, 255);
+color: rgb(0, 0, 0);
+font: 14pt &quot;MS Shell Dlg 2&quot;;</string>
+    </property>
+    <property name="text">
+     <string>Show all cost</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_6">
@@ -257,7 +293,7 @@ font: 28pt &quot;MS Shell Dlg 2&quot;;
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>530</y>
+      <y>570</y>
       <width>201</width>
       <height>31</height>
      </rect>
