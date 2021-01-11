@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>574</width>
-    <height>800</height>
+    <width>543</width>
+    <height>649</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -56,7 +56,7 @@ color: rgb(255, 255, 255);</string>
     <rect>
      <x>160</x>
      <y>240</y>
-     <width>261</width>
+     <width>191</width>
      <height>31</height>
     </rect>
    </property>
@@ -87,7 +87,7 @@ color: rgb(255, 255, 255);</string>
     <rect>
      <x>160</x>
      <y>330</y>
-     <width>261</width>
+     <width>191</width>
      <height>31</height>
     </rect>
    </property>
@@ -102,8 +102,8 @@ color: rgb(243, 243, 243);</string>
   <widget class="QPushButton" name="loginbutton">
    <property name="geometry">
     <rect>
-     <x>250</x>
-     <y>470</y>
+     <x>240</x>
+     <y>480</y>
      <width>111</width>
      <height>41</height>
     </rect>
@@ -119,8 +119,8 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>540</y>
+     <x>50</x>
+     <y>420</y>
      <width>131</width>
      <height>31</height>
     </rect>
@@ -135,9 +135,9 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
   <widget class="QPushButton" name="createaccbutton">
    <property name="geometry">
     <rect>
-     <x>250</x>
-     <y>540</y>
-     <width>121</width>
+     <x>220</x>
+     <y>420</y>
+     <width>131</width>
      <height>31</height>
     </rect>
    </property>
@@ -171,7 +171,7 @@ font: 20pt &quot;MS Shell Dlg 2&quot;;
   <widget class="QPushButton" name="forgotpassword">
    <property name="geometry">
     <rect>
-     <x>290</x>
+     <x>220</x>
      <y>380</y>
      <width>131</width>
      <height>23</height>
@@ -182,6 +182,24 @@ font: 20pt &quot;MS Shell Dlg 2&quot;;
    </property>
    <property name="text">
     <string>Forgot your password?</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="quitbutton">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>550</y>
+     <width>111</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 16pt &quot;MS Shell Dlg 2&quot;;
+background-color: rgb(85, 255, 255);
+color: rgb(0, 0, 0);</string>
+   </property>
+   <property name="text">
+    <string>Quit</string>
    </property>
   </widget>
  </widget>
