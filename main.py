@@ -132,6 +132,7 @@ class Resetpass(QDialog):
                 error_message = "New password and confirmed new password need to be identical"
                 msg.setText(erorr_message)
                 x= msg.exec_()
+                
     def backtologin(self):
         loginback=Login()
         widget.addWidget(loginback)
