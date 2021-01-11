@@ -89,6 +89,7 @@ class Resetpass(QDialog):
         self.newpass.setEchoMode(QtWidgets.QLineEdit.Password)
         self.confirmnewpass.setEchoMode(QtWidgets.QLineEdit.Password)
         self.resetbutton.clicked.connect(self.resetpass)
+        self.backtologinbutton.clicked.connect(self.backtologin)
 
     def resetpass(self):
         username = self.username.text()
@@ -110,17 +111,28 @@ class Resetpass(QDialog):
                 for row in table:
                     list.append(row)
                 connection.close()
+                if len(list)==1:
+                    connection = sqlite3.connect("csdl.db")
+                    reset = "UPDATE users SET password =\'" + newpass + "\' WHERE username=\'" + username + "\' AND safetyquestion=\'" + answer + "\'"
+                    connection.execute(reset)
+                    connection.commit()
+                    connection.close()
+                    msg = QMessageBox()
+                    msg.setWindowTitle("Successfully Reset")
+                    reset_message = "New password has been updated in the database"
+                    msg.setText(reset_message)
+                    x= msg.exec_()
             else:
                 msg = QMessageBox()
                 msg.setWindowTitle("Error")
                 error_message = "New password and confirmed new password need to be identical"
                 msg.setText(erorr_message)
                 x= msg.exec_()
-        
-            
-            
-                
-
+    def backtologin(self):
+        loginback=Login()
+        widget.addWidget(loginback)
+        widget.setCurrentIndex(widget.currentIndex()+1)
+      
 class CreateAcc(QDialog):
     def __init__(self):
         super(CreateAcc,self).__init__()
@@ -676,8 +688,8 @@ if not createConnection():
     msg.setText(my_message)
     x= msg.exec_()
     sys.exit(1)
-logindialog = Login()
 
+logindialog = Login()
 widget = QtWidgets.QStackedWidget()
 widget.addWidget(logindialog)
 widget.setFixedWidth(510)

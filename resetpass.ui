@@ -223,6 +223,23 @@ font: 16pt &quot;MS Shell Dlg 2&quot;;</string>
     <string>Reset Password</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="backtologinbutton">
+   <property name="geometry">
+    <rect>
+     <x>260</x>
+     <y>640</y>
+     <width>121</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(85, 255, 255);
+color: rgb(0, 0, 0);</string>
+   </property>
+   <property name="text">
+    <string>Back to Login</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
