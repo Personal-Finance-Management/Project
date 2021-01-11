@@ -210,40 +210,49 @@ class MainWindow(QMainWindow):
         currdir = os.getcwd()
         chosenfile = askopenfilename(parent=root, initialdir=currdir, title='Please select a .xls file')
         if chosenfile.endswith('.xls'): 
+            my_message = "Importing information: "
             if len(chosenfile) > 0:      
                 book = xlrd.open_workbook(chosenfile)
             connection = sqlite3.connect("csdl.db")
 
-            cursor = connection.cursor()
-            sheet = book.sheet_by_name("Incomes")
-            for r in range(1, sheet.nrows):
-                date = sheet.cell(r,0).value
-                income = sheet.cell(r,1).value
-                incometype = sheet.cell(r,2).value
-                sql = "INSERT INTO incomes (date, income, incometype) VALUES (\'" + str(date) + "\',\'" + str(income) + "\',\'" + str(incometype) + "\')"
-                cursor = connection.execute(sql)
-            Income_columns = str(sheet.ncols)
-            Income_rows = str(sheet.nrows-1)
-            cursor.close()
+            try:
+                cursor = connection.cursor()
+                sheet = book.sheet_by_name("Incomes")
+            except :
+                my_message = my_message + "\n The Excel file has no Incomes sheet" 
+            else:        
+                for r in range(1, sheet.nrows):
+                    date = sheet.cell(r,0).value
+                    income = sheet.cell(r,1).value
+                    incometype = sheet.cell(r,2).value
+                    sql = "INSERT INTO incomes (date, income, incometype) VALUES (\'" + str(date) + "\',\'" + str(income) + "\',\'" + str(incometype) + "\')"
+                    cursor = connection.execute(sql)
+                Income_columns = str(sheet.ncols)
+                Income_rows = str(sheet.nrows-1)
+                my_message = my_message + "\n Incomes: " + Income_columns + " columns, " + Income_rows + " rows! "
+                cursor.close()
 
-            cursor = connection.cursor()
-            sheet = book.sheet_by_name("Costs")
-            for r in range(1, sheet.nrows):
-                date = sheet.cell(r,0).value
-                cost = sheet.cell(r,1).value
-                costtype = sheet.cell(r,2).value
-                sql = "INSERT INTO costs (date, cost, costtype) VALUES (\'" + str(date) + "\',\'" + str(cost) + "\',\'" + str(costtype) + "\')"
-                cursor = connection.execute(sql)
-            Cost_columns = str(sheet.ncols)
-            Cost_rows = str(sheet.nrows-1)
-            cursor.close()
-
+            try:
+                cursor = connection.cursor()
+                sheet = book.sheet_by_name("Costs")
+            except :
+                my_message = my_message + "\n The Excel file has no Costs sheet" 
+            else:
+                for r in range(1, sheet.nrows):
+                    date = sheet.cell(r,0).value
+                    cost = sheet.cell(r,1).value
+                    costtype = sheet.cell(r,2).value
+                    sql = "INSERT INTO costs (date, cost, costtype) VALUES (\'" + str(date) + "\',\'" + str(cost) + "\',\'" + str(costtype) + "\')"
+                    cursor = connection.execute(sql)
+                Cost_columns = str(sheet.ncols)
+                Cost_rows = str(sheet.nrows-1)
+                my_message = my_message + "\n Costs: " + Cost_columns + " columns, " + Cost_rows + " rows! "
+                cursor.close()
             connection.commit()
             connection.close()
         
             msg = QMessageBox()
-            msg.setWindowTitle("Congratulation!")
-            my_message = "Successfully imported: \nIncomes: " + Income_columns + " columns, " + Income_rows + " rows! \nCosts: " + Cost_columns + " columns, " + Cost_rows + " rows!" 
+            msg.setWindowTitle("Task is done!")
             msg.setText(my_message)
             x= msg.exec_()
         
