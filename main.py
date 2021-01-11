@@ -67,7 +67,6 @@ class Login(QDialog):
                 widget.addWidget(mainwindow)
                 widget.setCurrentIndex(widget.currentIndex()+1)            
             else:
-                #print("Successfully logged in with email: ", email, " and password: ", password)
                 msg = QMessageBox()
                 msg.setWindowTitle("Failed attempt!")
                 my_message = "There is no username as: " + email 
@@ -133,15 +132,11 @@ class Resetpass(QDialog):
                 error_message = "New password and confirmed new password need to be identical"
                 msg.setText(erorr_message)
                 x= msg.exec_()
-<<<<<<< HEAD
     def backtologin(self):
         loginback=Login()
         widget.addWidget(loginback)
         widget.setCurrentIndex(widget.currentIndex()+1)
       
-=======
-        
->>>>>>> 73d060f03308d748fbb1f650d2e50697a4cae06b
 class CreateAcc(QDialog):
     def __init__(self):
         super(CreateAcc,self).__init__()
@@ -189,7 +184,6 @@ class CreateAcc(QDialog):
                     connection.commit()
                     connection.close()
 
-                    #print("Successfully created account with email: ", email, "and password: ", password)
                     msg = QMessageBox()
                     msg.setWindowTitle("Congratulation!")
                     my_message = "Successfully created account with email: " + email 
@@ -199,7 +193,6 @@ class CreateAcc(QDialog):
                     widget.addWidget(login)
                     widget.setCurrentIndex(widget.currentIndex()+1)
             else:
-                #print("Password should be identical!")
                 msg = QMessageBox()
                 msg.setWindowTitle("Failed attempt!")
                 my_message = "\"Confirmed Password\" should be identical to \"Password\"!"
