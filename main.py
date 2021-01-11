@@ -37,10 +37,11 @@ class Login(QDialog):
         self.password.setEchoMode(QtWidgets.QLineEdit.Password)
         self.createaccbutton.clicked.connect(self.gotocreate)
         self.forgotpassword.clicked.connect(self.resetpass)
+        self.quitbutton.clicked.connect(self.quit_program)
     def loginfunction(self):
         email = self.email.text()
         password = self.password.text()
-    #Do not let username and password leave blank
+        #Do not let username and password leave blank
         if email == "" or password =="":
             msg = QMessageBox()
             msg.setWindowTitle("Error")
@@ -77,10 +78,14 @@ class Login(QDialog):
         createacc=CreateAcc()
         widget.addWidget(createacc)
         widget.setCurrentIndex(widget.currentIndex()+1)
+
     def resetpass(self):
         resetpass = Resetpass()
         widget.addWidget(resetpass)
         widget.setCurrentIndex(widget.currentIndex()+1)
+        
+    def quit_program(self):        
+        sys. exit() 
 
 class Resetpass(QDialog):
     def __init__(self):
@@ -95,7 +100,7 @@ class Resetpass(QDialog):
         newpass = self.newpass.text()
         confirmnewpass = self.confirmnewpass.text()
         answer = self.answersafetyquestion.text()
-#Do not let data leave blank
+        #Do not let data leave blank
         if username == "" or newpass =="" or confirmnewpass == "" or answer == "":
             msg = QMessageBox()
             msg.setWindowTitle("Error")
@@ -117,10 +122,6 @@ class Resetpass(QDialog):
                 msg.setText(erorr_message)
                 x= msg.exec_()
         
-            
-            
-                
-
 class CreateAcc(QDialog):
     def __init__(self):
         super(CreateAcc,self).__init__()
