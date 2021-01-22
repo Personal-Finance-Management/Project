@@ -29,6 +29,13 @@ def createConnection():
         return False
     return True
 
+def on_pick(event):
+    print('Picked', event.x, event. y, event.xdata, event.ydata)
+    #plt.gca().set_title("Click at {:.2f}/{:.2f}\non {:s}".format(event.mouseevent.x, event.mouseevent.y, event.artist.__repr__()))
+    #plt.gcf().canvas.draw_idle()  # doesn't seem to be absolutely required,
+                                  # but doesn't hurt to put it in
+  
+
 class Login(QDialog):
     def __init__(self):
         super(Login,self).__init__()
@@ -448,6 +455,9 @@ class AnalyseData(QMainWindow):
         self.incomecostbutton.clicked.connect(self.compare_incomecost)
         self.backbutton.clicked.connect(self.back_window)
 
+    #def on_pick(event):
+        #print('Picked', event.ind)
+        
     def income_bymonth(self):
         connection = sqlite3.connect("csdl.db")
         sql = "SELECT strftime('%m',date)||'-'||substr(strftime('%Y',date),3,2), SUM(income) FROM incomes GROUP BY strftime('%m-%Y',date) ORDER BY strftime('%Y',date), strftime('%m',date) "
@@ -468,7 +478,7 @@ class AnalyseData(QMainWindow):
   
         # plotting a bar chart 
         plt.xticks(rotation=(min(90,index/12*45)))
-        plt.bar(left, income_values, tick_label = income_labels, width = 0.8, color = ['red', 'green']) 
+        plt.bar(left, income_values, tick_label = income_labels, width = 0.8, color = ['red', 'green'], picker = True) 
   
         # naming the x-axis 
         plt.xlabel('Months') 
@@ -478,8 +488,11 @@ class AnalyseData(QMainWindow):
         plt.title('Income over months!') 
   
         # function to show the plot 
-        plt.ion()
+        fig = plt.figure()
+        ax = fig.add_subplot(1, 1, 1)
+        fig.canvas.callbacks.connect('button_press_event',on_pick)
         plt.show()
+        plt.ion()
 
     def income_bytype(self):
         connection = sqlite3.connect("csdl.db")
