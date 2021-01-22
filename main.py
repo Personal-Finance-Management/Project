@@ -476,24 +476,39 @@ class AnalyseData(QMainWindow):
             income_labels.append(row[0])
             income_values.append(row[1])
         connection.close()
-  
+
+        # ma moi - phan nay chay 
+        plt.ion()
+        fig = plt.figure(figsize=(10,8))
+        fig.autofmt_xdate(rotation=(min(90,index/12*45)))
+        ax = fig.add_axes([0.1,0.1,0.8,0.8])
+        ax.bar(left, income_values, tick_label = income_labels, width = 0.8, color = ['red', 'green'], picker = True) 
+        ax.set_title('Income over months!')
+        ax.set_xlabel('Months')
+        ax.set_ylabel('Income')
+
+        # ket thuc ma moi - phan nay chay 
+
+        #bat dau ma cu - phan nay khong chay. 
+
         # plotting a bar chart 
-        plt.xticks(rotation=(min(90,index/12*45)))
-        plt.bar(left, income_values, tick_label = income_labels, width = 0.8, color = ['red', 'green'], picker = True) 
-  
+        # plt.xticks(rotation=(min(90,index/12*45)))
+        # plt.bar(left, income_values, tick_label = income_labels, width = 0.8, color = ['red', 'green'], picker = True) 
+
         # naming the x-axis 
-        plt.xlabel('Months') 
+        # plt.xlabel('Months') 
         # naming the y-axis 
-        plt.ylabel('Income') 
+        # plt.ylabel('Income') 
         # plot title 
-        plt.title('Income over months!') 
+        # plt.title('Income over months!') 
   
         # function to show the plot 
-        fig = plt.figure()
-        ax = fig.add_subplot(1, 1, 1)
-        fig.canvas.callbacks.connect('button_press_event',on_pick)
-        plt.show()
-        plt.ion()
+        # fig = plt.figure()
+        # ax = fig.add_subplot(1, 1, 1)
+        # fig.canvas.callbacks.connect('button_press_event',on_pick)
+        # plt.show()
+
+        # ket thuc ma cu 
 
     def income_bytype(self):
         connection = sqlite3.connect("csdl.db")
