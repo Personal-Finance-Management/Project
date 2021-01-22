@@ -76,7 +76,7 @@ class Login(QDialog):
             else:
                 msg = QMessageBox()
                 msg.setWindowTitle("Failed attempt!")
-                my_message = "There is no username as: " + email 
+                my_message = "Please check your username and password" 
                 msg.setText(my_message)
                 x= msg.exec_()
 
@@ -114,6 +114,7 @@ class Resetpass(QDialog):
             my_message = "Please fill in required information"
             msg.setText(my_message)
             x= msg.exec_()
+        else:
             if newpass == confirmnewpass:
                 connection = sqlite3.connect("csdl.db")
                 sql = "SELECT * FROM users WHERE username=\'" + username + "\' AND safetyquestion=\'" + answer + "\'"
