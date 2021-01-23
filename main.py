@@ -16,6 +16,7 @@ import tkinter
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 import os
+import time
 
 def createConnection():
     con = QSqlDatabase.addDatabase("QSQLITE")
@@ -28,13 +29,6 @@ def createConnection():
         )
         return False
     return True
-
-def on_pick(event):
-    print('Picked', event.x, event. y, event.xdata, event.ydata)
-    #plt.gca().set_title("Click at {:.2f}/{:.2f}\non {:s}".format(event.mouseevent.x, event.mouseevent.y, event.artist.__repr__()))
-    #plt.gcf().canvas.draw_idle()  # doesn't seem to be absolutely required,
-                                  # but doesn't hurt to put it in
-  
 
 class Login(QDialog):
     def __init__(self):
@@ -179,7 +173,6 @@ class CreateAcc(QDialog):
                 connection.close()
 
                 if len(list)==1: 
-                    #print ("The username has already registered. Please try the other name")
                     msg = QMessageBox()
                     msg.setWindowTitle("Fail to creat an account!")
                     my_message = "The chosen username ID has already existed. Please try another name" 
@@ -455,11 +448,18 @@ class AnalyseData(QMainWindow):
         self.costtypebutton.clicked.connect(self.cost_bytype)
         self.incomecostbutton.clicked.connect(self.compare_incomecost)
         self.backbutton.clicked.connect(self.back_window)
-
-    #def on_pick(event):
-        #print('Picked', event.ind)
         
     def income_bymonth(self):
+        def on_pick_bar(event):
+            circle1 = plt.Circle((0, 0), 0.1, color='blue', fill=True)
+            fig = plt.gcf()
+            ax = fig.gca()
+            ax.add_patch(circle1)
+            income_index_to_analyse = int(round(event.artist.xy[0]))-1
+            income_month_to_analyse = income_labels[income_index_to_analyse]
+            plt.gca().set_title("Income over months!\n(You have just chosen to further analyse this month: "+ income_month_to_analyse+")")
+            self.income_bytype_1month(income_month_to_analyse)
+
         connection = sqlite3.connect("csdl.db")
         sql = "SELECT strftime('%m',date)||'-'||substr(strftime('%Y',date),3,2), SUM(income) FROM incomes GROUP BY strftime('%m-%Y',date) ORDER BY strftime('%Y',date), strftime('%m',date) "
         cursor = connection.execute(sql)
@@ -477,77 +477,121 @@ class AnalyseData(QMainWindow):
             income_values.append(row[1])
         connection.close()
 
-        # ma moi - phan nay chay 
         plt.ion()
         fig = plt.figure(figsize=(10,8))
         fig.autofmt_xdate(rotation=(min(90,index/12*45)))
         ax = fig.add_axes([0.1,0.1,0.8,0.8])
         ax.bar(left, income_values, tick_label = income_labels, width = 0.8, color = ['red', 'green'], picker = True) 
-        ax.set_title('Income over months!')
+        ax.set_title('Income over months!\nClick on a month to further analyse the income of that month by type.')
+        ax.set_xlabel('Months')
+        ax.set_ylabel('Income')
+        fig.canvas.callbacks.connect('pick_event',on_pick_bar)
+
+    def income_bymonth_1type(self, income_type_to_analyse):
+        connection = sqlite3.connect("csdl.db")
+        sql = "SELECT strftime('%m',date)||'-'||substr(strftime('%Y',date),3,2), SUM(income) FROM incomes WHERE incometype=\'"+income_type_to_analyse+"\' GROUP BY strftime('%m-%Y',date) ORDER BY strftime('%Y',date), strftime('%m',date) "
+        cursor = connection.execute(sql)
+        # x-coordinates of left sides of bars
+        left = []
+        # heights of bars
+        income_values = []
+        # labels of bars
+        income_labels =[]
+        index = 0
+        for row in cursor:
+            index += 1
+            left.append(index)
+            income_labels.append(row[0])
+            income_values.append(row[1])
+        connection.close()
+
+        plt.ion()
+        fig = plt.figure(figsize=(10,8))
+        fig.autofmt_xdate(rotation=(min(90,index/12*45)))
+        ax = fig.add_axes([0.1,0.1,0.8,0.8])
+        ax.bar(left, income_values, tick_label = income_labels, width = 0.8, color = ['red', 'green'], picker = True) 
+        ax.set_title('Income over months of the activity '+income_type_to_analyse+ '\n(Close this window to return to the analysis of Income by type)')
         ax.set_xlabel('Months')
         ax.set_ylabel('Income')
 
-        # ket thuc ma moi - phan nay chay 
-
-        #bat dau ma cu - phan nay khong chay. 
-
-        # plotting a bar chart 
-        # plt.xticks(rotation=(min(90,index/12*45)))
-        # plt.bar(left, income_values, tick_label = income_labels, width = 0.8, color = ['red', 'green'], picker = True) 
-
-        # naming the x-axis 
-        # plt.xlabel('Months') 
-        # naming the y-axis 
-        # plt.ylabel('Income') 
-        # plot title 
-        # plt.title('Income over months!') 
-  
-        # function to show the plot 
-        # fig = plt.figure()
-        # ax = fig.add_subplot(1, 1, 1)
-        # fig.canvas.callbacks.connect('button_press_event',on_pick)
-        # plt.show()
-
-        # ket thuc ma cu 
-
     def income_bytype(self):
-        connection = sqlite3.connect("csdl.db")
+        def on_pick_slide(event):
+            if event.inaxes!=my_ax:
+                return
+            for w in ax_instance[0]:
+                (hit,_) = w.contains(event)
+                if hit:
+                    income_type_to_analyse = w.get_label()
+                    circle1 = plt.Circle((event.x, event.y), 0.1, color='black', fill=True)
+                    fig = plt.gcf()
+                    ax = fig.gca()
+                    ax.add_patch(circle1)
+                    plt.gca().set_title("Income from different activities!\n(You have just chosen to further analyse this activity: "+ income_type_to_analyse+")")
+                    self.income_bymonth_1type(income_type_to_analyse) 
         
-        # defining labels 
-        sql = "SELECT incometype FROM incomes GROUP BY incometype"
-        cursor = connection.execute(sql)
-        types = []
-        for row in cursor:
-            types.append(row[0])
-
-        # portion covered by each label
-        sql = "SELECT SUM(income) FROM incomes GROUP BY incometype"
+        connection = sqlite3.connect("csdl.db")
+        #defining portions and labels covered
+        sql = "SELECT SUM(income), incometype FROM incomes GROUP BY incometype ORDER BY SUM(income) DESC"
         cursor = connection.execute(sql)
         slices = []
+        types = []
         for row in cursor:
             slices.append(row[0])
+            types.append(row[1])
         connection.close()
 
-        # plot title 
-        plt.title('Income from different activities!') 
-
-        # plotting the pie chart 
+        plt.ion()
+        fig = plt.figure(figsize=(10,8))
+        ax = fig.add_axes([0.1,0.1,0.8,0.8])
+        ax.set_title('Income from different activities!\nClick on an activity to further analyse the income of that activity by month.')
         explode_list = []
         start_value = 0
         for i in range(0,len(slices)):
             explode_list.append(start_value)
             start_value += 0.025
-        slices.sort(reverse=True)
-        plt.pie(slices, labels = types, colors=None, startangle=0, shadow = False, explode = explode_list, radius = 1, autopct = '%1.1f%%') 
-  
-        # plotting legend 
-        plt.legend() 
-  
-        # showing the plot
-        plt.ion() 
-        plt.show() 
+        ax_instance = ax.pie(slices, labels = types, colors=None, startangle=0, shadow = False, explode = explode_list, radius = 1, autopct = '%1.1f%%') 
 
+        my_fig = ax_instance[0][0].figure
+        my_ax = ax_instance[0][0].axes
+        income_type_to_analyse =''            
+        fig.canvas.mpl_connect('button_press_event', on_pick_slide)
+
+    def income_bytype_1month(self, income_month_to_analyse):      
+        connection = sqlite3.connect("csdl.db")
+        #defining portions and labels covered
+        month_part = income_month_to_analyse[0:2]
+        year_part = income_month_to_analyse[3:5]
+        sql = "SELECT SUM(income), incometype FROM incomes WHERE strftime('%m',date)=\'"+ month_part + "\' AND substr(strftime('%Y',date),3,2)=\'" +year_part+ "\' GROUP BY incometype ORDER BY SUM(income) DESC"
+        cursor = connection.execute(sql)
+        slices = []
+        types = []
+        for row in cursor:
+            slices.append(row[0])
+            types.append(row[1])
+        connection.close()
+
+        plt.ion()
+        fig = plt.figure(figsize=(10,8))
+        ax = fig.add_axes([0.1,0.1,0.8,0.8])
+        ax.set_title('Income from different activities of the month '+str(income_month_to_analyse)+ '\n(Close this window to return to the analysis of Income over months)')
+        explode_list = []
+        start_value = 0
+        for i in range(0,len(slices)):
+            explode_list.append(start_value)
+            start_value += 0.025
+        ax.pie(slices, labels = types, colors=None, startangle=0, shadow = False, explode = explode_list, radius = 1, autopct = '%1.1f%%') 
+        
     def cost_bymonth(self):
+        def on_pick_bar(event):
+            circle1 = plt.Circle((0, 0), 0.1, color='blue', fill=True)
+            fig = plt.gcf()
+            ax = fig.gca()
+            ax.add_patch(circle1)
+            cost_index_to_analyse = int(round(event.artist.xy[0]))-1
+            cost_month_to_analyse = cost_labels[cost_index_to_analyse]
+            plt.gca().set_title("Costs over months!\n(You have just chosen to further analyse this month: "+ cost_month_to_analyse+")")
+            self.cost_bytype_1month(cost_month_to_analyse)
+
         connection = sqlite3.connect("csdl.db")
         sql = "SELECT strftime('%m',date)||'-'||substr(strftime('%Y',date),3,2), SUM(cost) FROM costs GROUP BY strftime('%m-%Y',date) ORDER BY strftime('%Y',date), strftime('%m',date) "
         cursor = connection.execute(sql)
@@ -564,62 +608,111 @@ class AnalyseData(QMainWindow):
             cost_labels.append(row[0])
             cost_values.append(row[1])
         connection.close()
-  
-        # plotting a bar chart 
-        plt.xticks(rotation=(min(90,index/12*45)))
-        plt.bar(left, cost_values, tick_label = cost_labels, width = 0.8, color = ['red', 'green']) 
-  
-        # naming the x-axis 
-        plt.xlabel('Months') 
-        # naming the y-axis 
-        plt.ylabel('Cost') 
-        # plot title 
-        plt.title('Cost over months!') 
-  
-        # function to show the plot 
+
         plt.ion()
-        plt.show()
+        fig = plt.figure(figsize=(10,8))
+        fig.autofmt_xdate(rotation=(min(90,index/12*45)))
+        ax = fig.add_axes([0.1,0.1,0.8,0.8])
+        ax.bar(left, cost_values, tick_label = cost_labels, width = 0.8, color = ['red', 'green'], picker = True) 
+        ax.set_title('Costs over months!\nClick on a month to further analyse the cost of that month by type.')
+        ax.set_xlabel('Months')
+        ax.set_ylabel('Cost')
+        fig.canvas.callbacks.connect('pick_event',on_pick_bar)
 
-
-    def cost_bytype(self):
+    def cost_bymonth_1type(self, cost_type_to_analyse):
         connection = sqlite3.connect("csdl.db")
-        
-        # defining labels 
-        sql = "SELECT costtype FROM costs GROUP BY costtype"
+        sql = "SELECT strftime('%m',date)||'-'||substr(strftime('%Y',date),3,2), SUM(cost) FROM costs WHERE costtype=\'"+cost_type_to_analyse+"\' GROUP BY strftime('%m-%Y',date) ORDER BY strftime('%Y',date), strftime('%m',date) "
         cursor = connection.execute(sql)
-        types = []
+        # x-coordinates of left sides of bars
+        left = []
+        # heights of bars
+        cost_values = []
+        # labels of bars
+        cost_labels =[]
+        index = 0
         for row in cursor:
-            types.append(row[0])
-
-        # portion covered by each label
-        sql = "SELECT SUM(cost) FROM costs GROUP BY costtype"
-        cursor = connection.execute(sql)
-        slices = []
-        for row in cursor:
-            slices.append(row[0])
-
+            index += 1
+            left.append(index)
+            cost_labels.append(row[0])
+            cost_values.append(row[1])
         connection.close()
 
-        # plot title 
-        plt.title('Cost from different activities!') 
+        plt.ion()
+        fig = plt.figure(figsize=(10,8))
+        fig.autofmt_xdate(rotation=(min(90,index/12*45)))
+        ax = fig.add_axes([0.1,0.1,0.8,0.8])
+        ax.bar(left, cost_values, tick_label = cost_labels, width = 0.8, color = ['red', 'green'], picker = True) 
+        ax.set_title('Cost over months of the activity '+cost_type_to_analyse+ '\n(Close this window to return to the analysis of Costs by type)')
+        ax.set_xlabel('Months')
+        ax.set_ylabel('Cost')
 
-        # plotting the pie chart 
+    def cost_bytype(self):
+        def on_pick_slide(event):
+            if event.inaxes!=my_ax:
+                return
+            for w in ax_instance[0]:
+                (hit,_) = w.contains(event)
+                if hit:
+                    cost_type_to_analyse = w.get_label()
+                    circle1 = plt.Circle((event.x, event.y), 0.1, color='black', fill=True)
+                    fig = plt.gcf()
+                    ax = fig.gca()
+                    ax.add_patch(circle1)
+                    plt.gca().set_title("Costs from different activities!\n(You have just chosen to further analyse this activity: "+ cost_type_to_analyse+")")
+                    self.cost_bymonth_1type(cost_type_to_analyse) 
+        
+        connection = sqlite3.connect("csdl.db")
+        #defining portions and labels covered
+        sql = "SELECT SUM(cost), costtype FROM costs GROUP BY costtype ORDER BY SUM(cost) DESC"
+        cursor = connection.execute(sql)
+        slices = []
+        types = []
+        for row in cursor:
+            slices.append(row[0])
+            types.append(row[1])
+        connection.close()
+
+        plt.ion()
+        fig = plt.figure(figsize=(10,8))
+        ax = fig.add_axes([0.1,0.1,0.8,0.8])
+        ax.set_title('Costs from different activities!\nClick on an activity to further analyse the cost of that activity by month.')
         explode_list = []
         start_value = 0
         for i in range(0,len(slices)):
             explode_list.append(start_value)
             start_value += 0.025
-        slices.sort(reverse=True)
-        plt.pie(slices, labels = types, colors=None, startangle=0, shadow = False, explode = explode_list, radius = 1, autopct = '%1.1f%%')  
-  
-        # plotting legend 
-        plt.legend() 
-  
-        # showing the plot 
+        ax_instance = ax.pie(slices, labels = types, colors=None, startangle=0, shadow = False, explode = explode_list, radius = 1, autopct = '%1.1f%%') 
+
+        my_fig = ax_instance[0][0].figure
+        my_ax = ax_instance[0][0].axes
+        cost_type_to_analyse =''            
+        fig.canvas.mpl_connect('button_press_event', on_pick_slide)
+
+    def cost_bytype_1month(self, cost_month_to_analyse):      
+        connection = sqlite3.connect("csdl.db")
+        #defining portions and labels covered
+        month_part = cost_month_to_analyse[0:2]
+        year_part = cost_month_to_analyse[3:5]
+        sql = "SELECT SUM(cost), costtype FROM costs WHERE strftime('%m',date)=\'"+ month_part + "\' AND substr(strftime('%Y',date),3,2)=\'" +year_part+ "\' GROUP BY costtype ORDER BY SUM(cost) DESC"
+        cursor = connection.execute(sql)
+        slices = []
+        types = []
+        for row in cursor:
+            slices.append(row[0])
+            types.append(row[1])
+        connection.close()
+
         plt.ion()
-        plt.show() 
-
-
+        fig = plt.figure(figsize=(10,8))
+        ax = fig.add_axes([0.1,0.1,0.8,0.8])
+        ax.set_title('Cost from different activities of the month '+str(cost_month_to_analyse)+ '\n(Close this window to return to the analysis of Costs over months)')
+        explode_list = []
+        start_value = 0
+        for i in range(0,len(slices)):
+            explode_list.append(start_value)
+            start_value += 0.025
+        ax.pie(slices, labels = types, colors=None, startangle=0, shadow = False, explode = explode_list, radius = 1, autopct = '%1.1f%%') 
+     
     def compare_incomecost(self):
         connection = sqlite3.connect("csdl.db")
         
