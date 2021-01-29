@@ -213,9 +213,6 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow,self).__init__()
         loadUi("mainwindow.ui",self)
-        #widget.setFixedWidth(800)
-        #widget.setFixedHeight(800)
-        #self.adjustSize()
         self.update()
         self.importbutton.clicked.connect(self.import_data)
         self.updatebutton.clicked.connect(self.update_data)
