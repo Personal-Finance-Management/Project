@@ -319,8 +319,8 @@ class AddData(QMainWindow):
 
         date = self.date.text()
         income = self.income.text()
-        incometype = self.incometype.text()
-        if self.date.text()!="" and self.income.text()!="" and self.incometype.text()!="":
+        incometype = self.incometype.currentText()
+        if self.date.text()!="" and self.income.text()!="":
             try :
                 getdate = datetime.strptime(date, "%d/%m/%Y")
                 
@@ -379,8 +379,8 @@ class AddData(QMainWindow):
 
         date = self.date.text()
         cost = self.cost.text()
-        costtype = self.costtype.text()
-        if self.date.text()!="" and self.cost.text()!="" and self.costtype.text()!="":
+        costtype = self.costtype.currentText()
+        if self.date.text()!="" and self.cost.text()!="":
             try :
                 getdate = datetime.strptime(date, "%d/%m/%Y")
                 
