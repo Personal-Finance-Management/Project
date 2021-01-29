@@ -213,11 +213,51 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow,self).__init__()
         loadUi("mainwindow.ui",self)
+        #widget.setFixedWidth(800)
+        #widget.setFixedHeight(800)
+        #self.adjustSize()
+        self.update()
         self.importbutton.clicked.connect(self.import_data)
         self.updatebutton.clicked.connect(self.update_data)
         self.analysebutton.clicked.connect(self.analyse_data)
         self.quitbutton.clicked.connect(self.quit_program)
     
+    def update(self):
+        connection = sqlite3.connect("csdl.db")
+        
+        sql = "select sum(income) from incomes"
+        cursor = connection.execute(sql)
+        total_income = cursor.fetchall()[0][0]
+        sql = "select sum(cost) from costs"
+        cursor = connection.execute(sql)
+        total_cost = cursor.fetchall()[0][0]
+        total_balance = total_income - total_cost
+        if total_balance<0:
+            total_balance = - total_balance
+            self.totalvaluelabel.setText('-$'+ str(total_balance))
+        else:
+            self.totalvaluelabel.setText('$'+ str(total_balance))
+
+        sql = "select sum(income) from incomes where date BETWEEN datetime('now', 'start of month') AND datetime('now', 'localtime')"
+        cursor = connection.execute(sql)
+        thismonth_income = cursor.fetchall()[0][0]
+        self.thismonthincomelabel.setText('Income: $'+ str(thismonth_income))
+
+        sql = "select sum(cost) from costs where date BETWEEN datetime('now', 'start of month') AND datetime('now', 'localtime')"
+        cursor = connection.execute(sql)
+        thismonth_cost = cursor.fetchall()[0][0]
+        self.thismonthcostlabel.setText('Costs: -$'+ str(thismonth_cost))
+
+        sql = "select sum(income) from incomes where date BETWEEN datetime('now', '-6 days') AND datetime('now', 'localtime')"
+        cursor = connection.execute(sql)
+        thisweek_income = cursor.fetchall()[0][0]
+        self.thisweekincomelabel.setText('Income: $'+ str(thisweek_income))
+
+        sql = "select sum(cost) from costs where date BETWEEN datetime('now', '-6 days') AND datetime('now', 'localtime')"
+        cursor = connection.execute(sql)
+        thisweek_cost = cursor.fetchall()[0][0]
+        self.thisweekcostlabel.setText('Costs: -$'+ str(thisweek_cost))
+
     def import_data(self):
         root = tkinter.Tk()
         root.withdraw() #use to hide tkinter window
@@ -827,6 +867,6 @@ logindialog = Login()
 widget = QtWidgets.QStackedWidget()
 widget.addWidget(logindialog)
 widget.setFixedWidth(510)
-widget.setFixedHeight(800)
+widget.setFixedHeight(650)
 widget.show()
 app.exec_()
